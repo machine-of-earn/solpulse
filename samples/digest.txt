@@ -1,0 +1,31 @@
+solpulse — Solana ecosystem snapshot @ 2026-08-21T11:32:40Z
+
+Network
+  health                       ok
+  epoch                        1020
+  epoch progress               8.58%
+  block height                 418726723
+  TPS (all)                    4207.02
+  TPS (non-vote)               2351.86
+  slot time                    366.4 ms
+
+Validators
+  active                       684
+  delinquent                   10
+  delinquent stake             0.07%
+  superminority                18
+  top-10 stake share           24.34%
+
+Economics
+  SOL price                    90.95 USD
+  SOL 24h change               4.22%
+  DeFi TVL                     5473838329.0 USD
+  TVL 7d change                13.16%
+  circulating supply           583178382.186 SOL
+  inflation                    3.685%
+
+Anomalies (1) — baseline 2 prior record(s)
+  baseline too short for deviation rules (need 5); threshold rules still applied
+  [INFO    ] Only 18 validators hold the superminority — that many colluding or failing together could halt finality.
+
+Sources: 5/5 ok

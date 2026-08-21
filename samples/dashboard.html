@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Solana ecosystem dashboard — 2026-08-21T11:32:40Z</title>
+<meta name="generator" content="solpulse 0.1.0">
+<meta name="description" content="Auto-updating snapshot of Solana network, validator and economic health.">
+<style>
+:root{color-scheme:dark;
+  --surface-0:#111110;--surface-1:#1a1a19;--surface-2:#222221;--line:#333331;
+  --text-primary:#ffffff;--text-secondary:#c3c2b7;--text-muted:#8b8a82;
+  --series-1:#3987e5;--series-2:#d95926;
+  --good:#0ca30c;--warning:#fab219;--critical:#d03b3b;}
+:root[data-theme=light]{color-scheme:light;
+  --surface-0:#f4f3f0;--surface-1:#fcfcfb;--surface-2:#f0efec;--line:#dedcd6;
+  --text-primary:#0b0b0b;--text-secondary:#52514e;--text-muted:#6f6e69;
+  --series-1:#2a78d6;--series-2:#eb6834;}
+@media(prefers-color-scheme:light){:root:where(:not([data-theme=dark])){color-scheme:light;
+  --surface-0:#f4f3f0;--surface-1:#fcfcfb;--surface-2:#f0efec;--line:#dedcd6;
+  --text-primary:#0b0b0b;--text-secondary:#52514e;--text-muted:#6f6e69;
+  --series-1:#2a78d6;--series-2:#eb6834;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--surface-0);color:var(--text-primary);
+  font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.wrap{max-width:1080px;margin:0 auto;padding:32px 20px 64px}
+header.top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+h1{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
+.stamp{color:var(--text-muted);font-size:13px;margin:0}
+h2{font-size:15px;margin:0 0 14px;font-weight:600;letter-spacing:.01em}
+h2 .sub{font-weight:400;color:var(--text-muted);font-size:13px;margin-left:6px}
+button{font:inherit;font-size:13px;color:var(--text-secondary);background:var(--surface-2);
+  border:1px solid var(--line);border-radius:7px;padding:5px 11px;cursor:pointer}
+button:hover{color:var(--text-primary);border-color:var(--text-muted)}
+button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--series-1);outline-offset:2px}
+.banner{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin:22px 0;padding:11px 14px;
+  border:1px solid var(--line);border-left-width:3px;border-radius:9px;background:var(--surface-1)}
+.banner-good{border-left-color:var(--good)}
+.banner-warning{border-left-color:var(--warning)}
+.banner-critical{border-left-color:var(--critical)}
+.banner-glyph{font-weight:700}
+.banner-good .banner-glyph{color:var(--good)}
+.banner-warning .banner-glyph{color:var(--warning)}
+.banner-critical .banner-glyph{color:var(--critical)}
+.banner-word{font-weight:600}
+.banner-detail{color:var(--text-secondary);font-size:14px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px;margin-bottom:12px}
+.tile{background:var(--surface-1);border:1px solid var(--line);border-radius:11px;padding:14px 15px}
+.tile-label{color:var(--text-muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.tile-value{font-size:27px;font-weight:600;letter-spacing:-.02em;margin-top:5px;
+  font-variant-numeric:tabular-nums}
+.tile-note{color:var(--text-muted);font-size:12px;margin-top:3px}
+.delta{font-size:12.5px;margin-top:3px;color:var(--text-secondary);font-variant-numeric:tabular-nums}
+.delta .arrow{font-size:11px}
+.delta-up .arrow{color:var(--good)}
+.delta-down .arrow{color:var(--critical)}
+.delta-label{color:var(--text-muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:12px;margin-top:12px}
+.card{background:var(--surface-1);border:1px solid var(--line);border-radius:11px;padding:17px 18px}
+.card-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.card-head h2{margin:0}
+.pills{display:flex;gap:7px;flex-wrap:wrap}
+.pill{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:3px 10px;
+  background:var(--surface-2);color:var(--text-secondary);white-space:nowrap}
+.pill-critical{border-color:var(--critical);color:var(--critical)}
+.pill-warning{border-color:var(--warning);color:var(--warning)}
+.pill-info{border-color:var(--line)}
+.pill-good{border-color:var(--good);color:var(--good)}
+.sev{white-space:nowrap;font-weight:600}
+.sev-critical{color:var(--critical)}
+.sev-warning{color:var(--warning)}
+.sev-info{color:var(--text-secondary)}
+tr.row-critical td{background:color-mix(in srgb,var(--critical) 9%,transparent)}
+tr.row-warning td{background:color-mix(in srgb,var(--warning) 8%,transparent)}
+.lead{text-align:left!important}
+td.lead{line-height:1.5}
+.empty{color:var(--text-secondary);margin:2px 0 0}
+.note{color:var(--text-muted);font-size:12.5px;margin:13px 0 0;line-height:1.55}
+.hero{font-size:48px;font-weight:600;letter-spacing:-.03em;margin:0 0 10px;
+  font-variant-numeric:tabular-nums;line-height:1}
+.meter{height:9px;background:var(--surface-2);border-radius:5px;overflow:hidden}
+.meter-fill{display:block;height:100%;background:var(--series-1);border-radius:5px;
+  transition:width .4s ease}
+.meter-unknown{background:repeating-linear-gradient(45deg,var(--line) 0 6px,transparent 6px 12px);width:100%!important}
+.pairs{display:grid;grid-template-columns:1fr auto;gap:5px 16px;margin:16px 0 0;font-size:13.5px}
+.pairs dt{color:var(--text-muted)}
+.pairs dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}
+.bars{display:flex;flex-direction:column;gap:6px}
+.bar-row{display:grid;grid-template-columns:88px 1fr 62px;align-items:center;gap:10px;
+  border-radius:5px;padding:1px 0}
+.bar-row:hover{background:var(--surface-2)}
+.bar-name{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11.5px;
+  color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-track{background:var(--surface-2);border-radius:4px;height:15px;overflow:hidden}
+.bar-fill{display:block;height:100%;border-radius:0 4px 4px 0;transition:width .4s ease}
+.bar-value{font-size:12.5px;text-align:right;font-variant-numeric:tabular-nums;
+  color:var(--text-secondary)}
+.stack{display:flex;height:22px;border-radius:5px;overflow:hidden;background:var(--surface-2)}
+.seg{display:block;height:100%}
+.seg-1{background:var(--series-1)}
+.seg-2{background:var(--series-2);border-left:2px solid var(--surface-1)}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:10px;font-size:13px;color:var(--text-secondary)}
+.key{display:inline-flex;align-items:center;gap:7px}
+.key b{color:var(--text-primary);font-variant-numeric:tabular-nums}
+.swatch{width:10px;height:10px;border-radius:3px;display:inline-block}
+.sw-1{background:var(--series-1)}
+.sw-2{background:var(--series-2)}
+.footnote{color:var(--text-muted);font-size:12.5px;margin:14px 0 0}
+.empty{color:var(--text-muted);font-size:13.5px;margin:0}
+.sources{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.src{display:grid;grid-template-columns:14px 84px 52px 62px 1fr;align-items:baseline;gap:9px;
+  font-size:13px;color:var(--text-secondary)}
+.src-glyph{font-weight:700}
+.src-good .src-glyph{color:var(--good)}
+.src-critical .src-glyph{color:var(--critical)}
+.src-name{color:var(--text-primary);font-size:12.5px}
+.src-ms{text-align:right;font-variant-numeric:tabular-nums;color:var(--text-muted)}
+.src-detail{color:var(--text-muted);overflow:hidden;text-overflow:ellipsis}
+.table-wrap{margin-top:16px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+caption{text-align:left;color:var(--text-muted);font-size:12.5px;padding-bottom:8px}
+th,td{text-align:right;padding:6px 9px;border-bottom:1px solid var(--line);
+  font-variant-numeric:tabular-nums}
+th:nth-child(2),td:nth-child(2){text-align:left}
+th{color:var(--text-muted);font-weight:500}
+td.mono{font-size:11.5px}
+.raw-head{display:flex;justify-content:flex-end;margin-bottom:8px}
+.raw{background:var(--surface-2);border-radius:8px;padding:13px;overflow:auto;max-height:380px;
+  font-size:11.5px;margin:0}
+#tip{position:fixed;z-index:20;pointer-events:none;background:var(--surface-2);
+  color:var(--text-primary);border:1px solid var(--line);border-radius:7px;padding:6px 10px;
+  font-size:12.5px;max-width:330px;box-shadow:0 6px 20px rgba(0,0,0,.35);opacity:0;
+  transition:opacity .12s}
+#tip.on{opacity:1}
+footer{color:var(--text-muted);font-size:12.5px;margin-top:26px;border-top:1px solid var(--line);
+  padding-top:14px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Solana ecosystem dashboard</h1>
+      <p class="stamp">Generated 2026-08-21T11:32:40Z · solpulse 0.1.0
+         · schema <span class="mono">solpulse/snapshot/v1</span></p>
+    </div>
+    <button id="theme" type="button" aria-pressed="true">Light theme</button>
+  </header>
+
+  <div class="banner banner-good" role="status"><span class="banner-glyph" aria-hidden="true">✓</span><span class="banner-word">Healthy</span><span class="banner-detail">RPC node reports a healthy, caught-up cluster. 10 validators are delinquent, holding 0.070% of stake.</span></div>
+  <section class="kpis" aria-label="Headline metrics"><div class="tile"><div class="tile-label">TPS — non-vote</div><div class="tile-value">2,352</div><div class="tile-note">4,207 including votes</div></div><div class="tile"><div class="tile-label">Slot time</div><div class="tile-value">366.4 ms</div><div class="tile-note">measured vs 400 ms target</div></div><div class="tile"><div class="tile-label">Active validators</div><div class="tile-value">684</div><div class="tile-note">10 delinquent</div></div><div class="tile"><div class="tile-label">SOL price</div><div class="tile-value">$90.95</div><div class="delta delta-up"><span class="arrow" aria-hidden="true">▲</span> <span class="delta-num">+4.22%</span> <span class="delta-label">24h</span></div></div><div class="tile"><div class="tile-label">DeFi TVL</div><div class="tile-value">$5.47B</div><div class="delta delta-up"><span class="arrow" aria-hidden="true">▲</span> <span class="delta-num">+13.16%</span> <span class="delta-label">7d</span></div></div><div class="tile"><div class="tile-label">Block height</div><div class="tile-value">418.73M</div><div class="tile-note">418,726,723 exactly</div></div></section>
+
+  <div class="grid">
+    
+<section class="card" aria-label="Anomaly detection">
+  <div class="card-head">
+    <h2>Anomalies</h2>
+    <div class="pills"><span class="pill pill-info"><span aria-hidden="true">·</span> 1 info</span></div>
+  </div>
+  <table><thead><tr><th class="lead">Severity</th><th class="lead">Metric</th><th>Deviation</th><th class="lead">What was seen</th></tr></thead><tbody><tr class="row-info"><td class="lead"><span class="sev sev-info"><span aria-hidden="true">·</span> Info</span></td><td class="lead mono">superminority_count</td><td>—</td><td class="lead">Only 18 validators hold the superminority — that many colluding or failing together could halt finality.</td></tr></tbody></table>
+  <p class="note"><strong>Baseline:</strong> 2 prior record(s) (2026-08-21T09:04:23Z → 2026-08-21T11:32:40Z).
+     Deviation rules did not run: the baseline needs at least 5 records and has 2. Absolute threshold rules — node health, delinquent stake, slot time, failed sources — still applied; those need no history. No baseline was invented from too few points.</p>
+</section>
+  </div>
+
+  <div class="grid">
+    
+<section class="card" aria-label="Epoch progress">
+  <h2>Epoch 1,020</h2>
+  <p class="hero">8.58%</p>
+  <div class="meter" role="img"
+       aria-label="Epoch 1,020 is 8.58% complete">
+    <div class="meter-fill" style="width:8.58%"></div>
+  </div>
+  <dl class="pairs">
+    <dt>Slots remaining</dt><dd>394,936</dd>
+    <dt>Estimated time left</dt><dd>40h 11m</dd>
+    <dt>Absolute slot</dt><dd>440,677,064</dd>
+    <dt>Transactions (all time)</dt><dd>540,307,467,850</dd>
+  </dl>
+</section>
+    
+<section class="card" aria-label="Supply and economics">
+  <h2>Supply &amp; economics</h2>
+  <div class="stack" role="img" aria-label="Circulating 92.18%, non-circulating 7.82%"><span class="seg seg-1" style="width:92.18%" data-tip="Circulating — 583,178,382 SOL (92.18%)"></span><span class="seg seg-2" style="width:7.82%" data-tip="Non-circulating — 49,461,973 SOL (7.82%)"></span></div><div class="legend"><span class="key"><i class="swatch sw-1"></i>Circulating <b>92.18%</b></span><span class="key"><i class="swatch sw-2"></i>Non-circulating <b>7.82%</b></span></div>
+  <dl class="pairs">
+    <dt>Circulating</dt><dd>583,178,382 SOL</dd>
+    <dt>Non-circulating</dt><dd>49,461,973 SOL</dd>
+    <dt>Total supply</dt><dd>632,640,355 SOL</dd>
+    <dt>Inflation (total)</dt><dd>3.685%</dd>
+    <dt>Market cap</dt><dd>$53.03B</dd>
+    <dt>TVL 30d change</dt><dd>+9.43%</dd>
+  </dl>
+</section>
+  </div>
+  <div class="grid">
+    
+<section class="card" aria-label="Validator stake distribution">
+  <div class="card-head">
+    <h2>Stake by validator <span class="sub">top 10 of 684 active</span></h2>
+    <button class="toggle" data-target="stake-table" aria-expanded="false">Table view</button>
+  </div>
+  <div class="bars"><div class="bar-row" tabindex="0" data-tip="CcaHc2L43ZWjwCHART3oZoJvHLAe9hzT2DJNUpBzoTN1 — 17,066,372 SOL, 3.940% of stake, 7% commission"><span class="bar-name" title="CcaHc2L43ZWjwCHART3oZoJvHLAe9hzT2DJNUpBzoTN1">CcaHc2…BzoTN1</span><span class="bar-track"><span class="bar-fill" style="width:100.00%;background:#9ec5f4"></span></span><span class="bar-value">3.94%</span></div><div class="bar-row" tabindex="0" data-tip="he1iusunGwqrNtafDtLdhsUQDFvo13z9sUa36PauBtk — 16,054,078 SOL, 3.706% of stake, 0% commission"><span class="bar-name" title="he1iusunGwqrNtafDtLdhsUQDFvo13z9sUa36PauBtk">he1ius…PauBtk</span><span class="bar-track"><span class="bar-fill" style="width:94.06%;background:#86b6ef"></span></span><span class="bar-value">3.71%</span></div><div class="bar-row" tabindex="0" data-tip="3N7s9zXMZ4QqvHQR15t5GNHyqc89KduzMP7423eWiD5g — 12,175,413 SOL, 2.811% of stake, 0% commission"><span class="bar-name" title="3N7s9zXMZ4QqvHQR15t5GNHyqc89KduzMP7423eWiD5g">3N7s9z…eWiD5g</span><span class="bar-track"><span class="bar-fill" style="width:71.35%;background:#6da7ec"></span></span><span class="bar-value">2.81%</span></div><div class="bar-row" tabindex="0" data-tip="CatzoSMUkTRidT5DwBxAC2pEtnwMBTpkCepHkFgZDiqb — 11,782,032 SOL, 2.720% of stake, 5% commission"><span class="bar-name" title="CatzoSMUkTRidT5DwBxAC2pEtnwMBTpkCepHkFgZDiqb">CatzoS…gZDiqb</span><span class="bar-track"><span class="bar-fill" style="width:69.04%;background:#5598e7"></span></span><span class="bar-value">2.72%</span></div><div class="bar-row" tabindex="0" data-tip="26pV97Ce83ZQ6Kz9XT4td8tdoUFPTng8Fb8gPyc53dJx — 9,178,661 SOL, 2.119% of stake, 7% commission"><span class="bar-name" title="26pV97Ce83ZQ6Kz9XT4td8tdoUFPTng8Fb8gPyc53dJx">26pV97…c53dJx</span><span class="bar-track"><span class="bar-fill" style="width:53.78%;background:#3987e5"></span></span><span class="bar-value">2.12%</span></div><div class="bar-row" tabindex="0" data-tip="51JBzSTU5rAM8gLAVQKgp4WoZerQcSqWC7BitBzgUNAm — 8,917,577 SOL, 2.059% of stake, 10% commission"><span class="bar-name" title="51JBzSTU5rAM8gLAVQKgp4WoZerQcSqWC7BitBzgUNAm">51JBzS…zgUNAm</span><span class="bar-track"><span class="bar-fill" style="width:52.26%;background:#2a78d6"></span></span><span class="bar-value">2.06%</span></div><div class="bar-row" tabindex="0" data-tip="8GbwASqdpw4dVcwbWUxbHXMrjyQx2aKkoBR5H1GJF8iD — 8,402,660 SOL, 1.940% of stake, 0% commission"><span class="bar-name" title="8GbwASqdpw4dVcwbWUxbHXMrjyQx2aKkoBR5H1GJF8iD">8GbwAS…GJF8iD</span><span class="bar-track"><span class="bar-fill" style="width:49.24%;background:#256abf"></span></span><span class="bar-value">1.94%</span></div><div class="bar-row" tabindex="0" data-tip="9QU2QSxhb24FUX3Tu2FpczXjpK3VYrvRudywSZaM29mF — 7,964,352 SOL, 1.839% of stake, 7% commission"><span class="bar-name" title="9QU2QSxhb24FUX3Tu2FpczXjpK3VYrvRudywSZaM29mF">9QU2QS…aM29mF</span><span class="bar-track"><span class="bar-fill" style="width:46.68%;background:#1c5cab"></span></span><span class="bar-value">1.84%</span></div><div class="bar-row" tabindex="0" data-tip="CvSb7wdQAFpHuSpTYTJnX5SYH4hCfQ9VuGnqrKaKwycB — 7,357,821 SOL, 1.699% of stake, 5% commission"><span class="bar-name" title="CvSb7wdQAFpHuSpTYTJnX5SYH4hCfQ9VuGnqrKaKwycB">CvSb7w…aKwycB</span><span class="bar-track"><span class="bar-fill" style="width:43.12%;background:#184f95"></span></span><span class="bar-value">1.70%</span></div><div class="bar-row" tabindex="0" data-tip="DumiCKHVqoCQKD8roLApzR5Fit8qGV5fVQsJV9sTZk4a — 6,547,243 SOL, 1.511% of stake, 0% commission"><span class="bar-name" title="DumiCKHVqoCQKD8roLApzR5Fit8qGV5fVQsJV9sTZk4a">DumiCK…sTZk4a</span><span class="bar-track"><span class="bar-fill" style="width:38.35%;background:#184f95"></span></span><span class="bar-value">1.51%</span></div></div>
+  <p class="footnote">
+    Top-10 share 24.34% ·
+    superminority 18 validators —
+    the smallest group controlling over one third of stake, and so the group that could halt consensus.
+  </p>
+  <div class="table-wrap" id="stake-table" hidden>
+    <table>
+      <caption>Top 10 validators by active stake</caption>
+      <thead><tr><th>#</th><th>Vote account</th><th>Stake (SOL)</th><th>Share</th><th>Commission</th></tr></thead>
+      <tbody><tr><td>1</td><td class="mono">CcaHc2L43ZWjwCHART3oZoJvHLAe9hzT2DJNUpBzoTN1</td><td>17,066,372</td><td>3.940%</td><td>7%</td></tr><tr><td>2</td><td class="mono">he1iusunGwqrNtafDtLdhsUQDFvo13z9sUa36PauBtk</td><td>16,054,078</td><td>3.706%</td><td>0%</td></tr><tr><td>3</td><td class="mono">3N7s9zXMZ4QqvHQR15t5GNHyqc89KduzMP7423eWiD5g</td><td>12,175,413</td><td>2.811%</td><td>0%</td></tr><tr><td>4</td><td class="mono">CatzoSMUkTRidT5DwBxAC2pEtnwMBTpkCepHkFgZDiqb</td><td>11,782,032</td><td>2.720%</td><td>5%</td></tr><tr><td>5</td><td class="mono">26pV97Ce83ZQ6Kz9XT4td8tdoUFPTng8Fb8gPyc53dJx</td><td>9,178,661</td><td>2.119%</td><td>7%</td></tr><tr><td>6</td><td class="mono">51JBzSTU5rAM8gLAVQKgp4WoZerQcSqWC7BitBzgUNAm</td><td>8,917,577</td><td>2.059%</td><td>10%</td></tr><tr><td>7</td><td class="mono">8GbwASqdpw4dVcwbWUxbHXMrjyQx2aKkoBR5H1GJF8iD</td><td>8,402,660</td><td>1.940%</td><td>0%</td></tr><tr><td>8</td><td class="mono">9QU2QSxhb24FUX3Tu2FpczXjpK3VYrvRudywSZaM29mF</td><td>7,964,352</td><td>1.839%</td><td>7%</td></tr><tr><td>9</td><td class="mono">CvSb7wdQAFpHuSpTYTJnX5SYH4hCfQ9VuGnqrKaKwycB</td><td>7,357,821</td><td>1.699%</td><td>5%</td></tr><tr><td>10</td><td class="mono">DumiCKHVqoCQKD8roLApzR5Fit8qGV5fVQsJV9sTZk4a</td><td>6,547,243</td><td>1.511%</td><td>0%</td></tr></tbody>
+    </table>
+  </div>
+</section>
+  </div>
+  <div class="grid">
+    
+<section class="card" aria-label="Data sources">
+  <div class="card-head">
+    <h2>Data sources <span class="sub">5 of
+      5 returned data</span></h2>
+    <button class="toggle" data-target="raw-json" aria-expanded="false">Raw JSON</button>
+  </div>
+  <ul class="sources"><li class="src src-good"><span class="src-glyph" aria-hidden="true">✓</span><span class="src-name mono">economics</span><span class="src-word">ok</span><span class="src-ms">6,440 ms</span><span class="src-detail">collected</span></li><li class="src src-good"><span class="src-glyph" aria-hidden="true">✓</span><span class="src-name mono">network</span><span class="src-word">ok</span><span class="src-ms">425 ms</span><span class="src-detail">collected</span></li><li class="src src-good"><span class="src-glyph" aria-hidden="true">✓</span><span class="src-name mono">price</span><span class="src-word">ok</span><span class="src-ms">160 ms</span><span class="src-detail">collected</span></li><li class="src src-good"><span class="src-glyph" aria-hidden="true">✓</span><span class="src-name mono">tvl</span><span class="src-word">ok</span><span class="src-ms">42 ms</span><span class="src-detail">collected</span></li><li class="src src-good"><span class="src-glyph" aria-hidden="true">✓</span><span class="src-name mono">validators</span><span class="src-word">ok</span><span class="src-ms">963 ms</span><span class="src-detail">collected</span></li></ul>
+  <p class="footnote">A source is recorded as <em>ok</em> or <em>error</em> and never as a
+     plausible-looking zero, so “0” in this report always means a measured zero.</p>
+  <div class="table-wrap" id="raw-json" hidden>
+    <div class="raw-head"><button class="copy" type="button">Copy JSON</button></div>
+    <pre class="raw"><code id="raw-code"></code></pre>
+  </div>
+</section>
+  </div>
+
+  <footer>
+    Collected straight from the Solana JSON-RPC API plus keyless public endpoints
+    (CoinGecko, DefiLlama). No API keys, no accounts, and no dependencies beyond the
+    Python standard library — this page included.
+  </footer>
+</div>
+<script type="application/json" id="snapshot-data">{
+  "anomalies": {
+    "anomalies": [
+      {
+        "code": "superminority_concentrated",
+        "message": "Only 18 validators hold the superminority \u2014 that many colluding or failing together could halt finality.",
+        "metric": "superminority_count",
+        "severity": "info",
+        "threshold": 20,
+        "value": 18
+      }
+    ],
+    "baseline": {
+      "first": "2026-08-21T09:04:23Z",
+      "last": "2026-08-21T11:32:40Z",
+      "min_required": 5,
+      "records": 2,
+      "sufficient": false,
+      "window": 30
+    },
+    "checked": [],
+    "counts": {
+      "critical": 0,
+      "info": 1,
+      "warn": 0
+    },
+    "schema": "solpulse/anomalies/v1",
+    "skipped": {
+      "active_count": "history has 2 record(s), need 5",
+      "circulating_supply_sol": "history has 2 record(s), need 5",
+      "delinquent_count": "history has 2 record(s), need 5",
+      "delinquent_stake_pct": "history has 2 record(s), need 5",
+      "slot_time_ms_mean": "history has 2 record(s), need 5",
+      "sol_usd": "history has 2 record(s), need 5",
+      "top10_stake_share_pct": "history has 2 record(s), need 5",
+      "tps_mean": "history has 2 record(s), need 5",
+      "tps_nonvote_mean": "history has 2 record(s), need 5",
+      "tvl_usd": "history has 2 record(s), need 5"
+    },
+    "worst": "info"
+  },
+  "generated_at": "2026-08-21T11:32:40Z",
+  "generator": "solpulse 0.1.0",
+  "schema": "solpulse/snapshot/v1",
+  "sources": {
+    "economics": {
+      "data": {
+        "circulating_pct": 92.18,
+        "circulating_supply_sol": 583178382.186,
+        "inflation_epoch": 1020,
+        "inflation_total_pct": 3.685,
+        "inflation_validator_pct": 3.685,
+        "non_circulating_supply_sol": 49461973.202,
+        "total_supply_sol": 632640355.388
+      },
+      "elapsed_ms": 6440.0,
+      "status": "ok"
+    },
+    "network": {
+      "data": {
+        "absolute_slot": 440677064,
+        "block_height": 418726723,
+        "epoch": 1020,
+        "epoch_eta_seconds": 144704,
+        "epoch_progress_pct": 8.58,
+        "epoch_slots_remaining": 394936,
+        "health": "ok",
+        "throughput": {
+          "sample_window_secs": 1800,
+          "samples_used": 30,
+          "slot_time_ms_mean": 366.4,
+          "target_slot_time_ms": 400.0,
+          "tps_latest": 4166.92,
+          "tps_mean": 4207.02,
+          "tps_nonvote_latest": 2279.33,
+          "tps_nonvote_mean": 2351.86
+        },
+        "transaction_count": 540307467850
+      },
+      "elapsed_ms": 424.9,
+      "status": "ok"
+    },
+    "price": {
+      "data": {
+        "sol_market_cap_usd": 53034655073.4168,
+        "sol_usd": 90.95,
+        "sol_usd_24h_change_pct": 4.22,
+        "source": "coingecko"
+      },
+      "elapsed_ms": 160.5,
+      "status": "ok"
+    },
+    "tvl": {
+      "data": {
+        "history_days": 1984,
+        "source": "defillama",
+        "tvl_as_of": 1787270400,
+        "tvl_change_1d_pct": 4.74,
+        "tvl_change_30d_pct": 9.43,
+        "tvl_change_7d_pct": 13.16,
+        "tvl_usd": 5473838329.0
+      },
+      "elapsed_ms": 42.1,
+      "status": "ok"
+    },
+    "validators": {
+      "data": {
+        "active_count": 684,
+        "delinquent_count": 10,
+        "delinquent_pct": 1.44,
+        "delinquent_stake_pct": 0.07,
+        "delinquent_stake_sol": 304579.893,
+        "median_commission_pct": 5,
+        "superminority_count": 18,
+        "top10_stake_share_pct": 24.34,
+        "top_validators": [
+          {
+            "commission_pct": 7,
+            "node_pubkey": "Fd7btgySsrjuo25CJCj7oE7VPMyezDhnx7pZkj2v69Nk",
+            "stake_share_pct": 3.94,
+            "stake_sol": 17066371.971,
+            "vote_pubkey": "CcaHc2L43ZWjwCHART3oZoJvHLAe9hzT2DJNUpBzoTN1"
+          },
+          {
+            "commission_pct": 0,
+            "node_pubkey": "HEL1USMZKAL2odpNBj2oCjffnFGaYwmbGmyewGv1e2TU",
+            "stake_share_pct": 3.706,
+            "stake_sol": 16054077.974,
+            "vote_pubkey": "he1iusunGwqrNtafDtLdhsUQDFvo13z9sUa36PauBtk"
+          },
+          {
+            "commission_pct": 0,
+            "node_pubkey": "DRpbCBMxVnDK7maPM5tGv6MvB3v1sRMC86PZ8okm21hy",
+            "stake_share_pct": 2.811,
+            "stake_sol": 12175412.97,
+            "vote_pubkey": "3N7s9zXMZ4QqvHQR15t5GNHyqc89KduzMP7423eWiD5g"
+          },
+          {
+            "commission_pct": 5,
+            "node_pubkey": "JUPiTERrZqgf1jUyR7dSkhMx4Kn2qJyekWsg3LT1h4b",
+            "stake_share_pct": 2.72,
+            "stake_sol": 11782031.718,
+            "vote_pubkey": "CatzoSMUkTRidT5DwBxAC2pEtnwMBTpkCepHkFgZDiqb"
+          },
+          {
+            "commission_pct": 7,
+            "node_pubkey": "C8Bey3LKVJHVqN6xPTeW8WJfUgFQAeGNBpT4Rp99JP1k",
+            "stake_share_pct": 2.119,
+            "stake_sol": 9178661.115,
+            "vote_pubkey": "26pV97Ce83ZQ6Kz9XT4td8tdoUFPTng8Fb8gPyc53dJx"
+          },
+          {
+            "commission_pct": 10,
+            "node_pubkey": "CAo1dCGYrB6NhHh5xb1cGjUiu86iyCfMTENxgHumSve4",
+            "stake_share_pct": 2.059,
+            "stake_sol": 8917576.632,
+            "vote_pubkey": "51JBzSTU5rAM8gLAVQKgp4WoZerQcSqWC7BitBzgUNAm"
+          },
+          {
+            "commission_pct": 0,
+            "node_pubkey": "E1r4Psq84tHfQ6aPTvvDka4U3u8zPVD7gEUrH25RdxHL",
+            "stake_share_pct": 1.94,
+            "stake_sol": 8402660.187,
+            "vote_pubkey": "8GbwASqdpw4dVcwbWUxbHXMrjyQx2aKkoBR5H1GJF8iD"
+          },
+          {
+            "commission_pct": 7,
+            "node_pubkey": "EvnRmnMrd69kFdbLMxWkTn1icZ7DCceRhvmb2SJXqDo4",
+            "stake_share_pct": 1.839,
+            "stake_sol": 7964352.039,
+            "vote_pubkey": "9QU2QSxhb24FUX3Tu2FpczXjpK3VYrvRudywSZaM29mF"
+          },
+          {
+            "commission_pct": 5,
+            "node_pubkey": "9eGrDohdNTAo61DRHyfMuqKWXqYnA3i254Wiszxe8FoY",
+            "stake_share_pct": 1.699,
+            "stake_sol": 7357820.584,
+            "vote_pubkey": "CvSb7wdQAFpHuSpTYTJnX5SYH4hCfQ9VuGnqrKaKwycB"
+          },
+          {
+            "commission_pct": 0,
+            "node_pubkey": "Awes4Tr6TX8JDzEhCZY2QVNimT6iD1zWHzf1vNyGvpLM",
+            "stake_share_pct": 1.511,
+            "stake_sol": 6547242.759,
+            "vote_pubkey": "DumiCKHVqoCQKD8roLApzR5Fit8qGV5fVQsJV9sTZk4a"
+          }
+        ],
+        "total_count": 694,
+        "total_stake_sol": 433180754.148,
+        "zero_commission_count": 258
+      },
+      "elapsed_ms": 962.6,
+      "status": "ok"
+    }
+  },
+  "summary": {
+    "complete": true,
+    "failed_sources": [],
+    "sources_failed": 0,
+    "sources_ok": 5,
+    "sources_total": 5
+  }
+}</script>
+<script>
+(function(){
+  var root=document.documentElement, KEY='solpulse-theme';
+  try{var saved=localStorage.getItem(KEY); if(saved){root.setAttribute('data-theme',saved);}}catch(e){}
+  var btn=document.getElementById('theme');
+  function label(){
+    var dark=root.getAttribute('data-theme')!=='light';
+    btn.textContent=dark?'Light theme':'Dark theme';
+    btn.setAttribute('aria-pressed',String(dark));
+  }
+  label();
+  btn.addEventListener('click',function(){
+    var next=root.getAttribute('data-theme')==='light'?'dark':'light';
+    root.setAttribute('data-theme',next);
+    try{localStorage.setItem(KEY,next);}catch(e){}
+    label();
+  });
+
+  // Raw JSON is parsed from a data island, never interpolated into executable JS.
+  var island=document.getElementById('snapshot-data');
+  var code=document.getElementById('raw-code');
+  if(island&&code){code.textContent=island.textContent.trim();}
+
+  Array.prototype.forEach.call(document.querySelectorAll('.toggle'),function(b){
+    b.addEventListener('click',function(){
+      var el=document.getElementById(b.getAttribute('data-target'));
+      if(!el)return;
+      var open=el.hasAttribute('hidden');
+      if(open){el.removeAttribute('hidden');}else{el.setAttribute('hidden','');}
+      b.setAttribute('aria-expanded',String(open));
+    });
+  });
+
+  var copy=document.querySelector('.copy');
+  if(copy&&code){
+    copy.addEventListener('click',function(){
+      var done=function(){copy.textContent='Copied';setTimeout(function(){copy.textContent='Copy JSON';},1400);};
+      if(navigator.clipboard){navigator.clipboard.writeText(code.textContent).then(done,function(){});}
+      else{var s=window.getSelection(),r=document.createRange();r.selectNodeContents(code);
+           s.removeAllRanges();s.addRange(r);done();}
+    });
+  }
+
+  // Hover/focus tooltip layer. Hit target is the whole row, not the mark.
+  var tip=document.createElement('div');
+  tip.id='tip'; tip.setAttribute('role','tooltip');
+  document.body.appendChild(tip);
+  function show(el,x,y){
+    var text=el.getAttribute('data-tip'); if(!text)return;
+    tip.textContent=text; tip.classList.add('on');
+    var box=tip.getBoundingClientRect();
+    var left=Math.min(Math.max(8,x+14),window.innerWidth-box.width-8);
+    var top=y-box.height-12; if(top<8){top=y+18;}
+    tip.style.left=left+'px'; tip.style.top=top+'px';
+  }
+  function hide(){tip.classList.remove('on');}
+  document.addEventListener('mousemove',function(e){
+    var el=e.target.closest?e.target.closest('[data-tip]'):null;
+    if(el){show(el,e.clientX,e.clientY);}else{hide();}
+  });
+  document.addEventListener('focusin',function(e){
+    var el=e.target.closest?e.target.closest('[data-tip]'):null;
+    if(el){var b=el.getBoundingClientRect();show(el,b.left+b.width/2,b.top);}else{hide();}
+  });
+  document.addEventListener('focusout',hide);
+  document.addEventListener('scroll',hide,{passive:true});
+})();
+</script>
+</body>
+</html>

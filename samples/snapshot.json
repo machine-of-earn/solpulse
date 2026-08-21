@@ -1,0 +1,203 @@
+{
+  "anomalies": {
+    "anomalies": [
+      {
+        "code": "superminority_concentrated",
+        "message": "Only 18 validators hold the superminority \u2014 that many colluding or failing together could halt finality.",
+        "metric": "superminority_count",
+        "severity": "info",
+        "threshold": 20,
+        "value": 18
+      }
+    ],
+    "baseline": {
+      "first": "2026-08-21T09:04:23Z",
+      "last": "2026-08-21T09:04:23Z",
+      "min_required": 5,
+      "records": 1,
+      "sufficient": false,
+      "window": 30
+    },
+    "checked": [],
+    "counts": {
+      "critical": 0,
+      "info": 1,
+      "warn": 0
+    },
+    "schema": "solpulse/anomalies/v1",
+    "skipped": {
+      "active_count": "history has 1 record(s), need 5",
+      "circulating_supply_sol": "history has 1 record(s), need 5",
+      "delinquent_count": "history has 1 record(s), need 5",
+      "delinquent_stake_pct": "history has 1 record(s), need 5",
+      "slot_time_ms_mean": "history has 1 record(s), need 5",
+      "sol_usd": "history has 1 record(s), need 5",
+      "top10_stake_share_pct": "history has 1 record(s), need 5",
+      "tps_mean": "history has 1 record(s), need 5",
+      "tps_nonvote_mean": "history has 1 record(s), need 5",
+      "tvl_usd": "history has 1 record(s), need 5"
+    },
+    "worst": "info"
+  },
+  "generated_at": "2026-08-21T11:32:40Z",
+  "generator": "solpulse 0.1.0",
+  "schema": "solpulse/snapshot/v1",
+  "sources": {
+    "economics": {
+      "data": {
+        "circulating_pct": 92.18,
+        "circulating_supply_sol": 583178382.186,
+        "inflation_epoch": 1020,
+        "inflation_total_pct": 3.685,
+        "inflation_validator_pct": 3.685,
+        "non_circulating_supply_sol": 49461973.202,
+        "total_supply_sol": 632640355.388
+      },
+      "elapsed_ms": 6440.0,
+      "status": "ok"
+    },
+    "network": {
+      "data": {
+        "absolute_slot": 440677064,
+        "block_height": 418726723,
+        "epoch": 1020,
+        "epoch_eta_seconds": 144704,
+        "epoch_progress_pct": 8.58,
+        "epoch_slots_remaining": 394936,
+        "health": "ok",
+        "throughput": {
+          "sample_window_secs": 1800,
+          "samples_used": 30,
+          "slot_time_ms_mean": 366.4,
+          "target_slot_time_ms": 400.0,
+          "tps_latest": 4166.92,
+          "tps_mean": 4207.02,
+          "tps_nonvote_latest": 2279.33,
+          "tps_nonvote_mean": 2351.86
+        },
+        "transaction_count": 540307467850
+      },
+      "elapsed_ms": 424.9,
+      "status": "ok"
+    },
+    "price": {
+      "data": {
+        "sol_market_cap_usd": 53034655073.4168,
+        "sol_usd": 90.95,
+        "sol_usd_24h_change_pct": 4.22,
+        "source": "coingecko"
+      },
+      "elapsed_ms": 160.5,
+      "status": "ok"
+    },
+    "tvl": {
+      "data": {
+        "history_days": 1984,
+        "source": "defillama",
+        "tvl_as_of": 1787270400,
+        "tvl_change_1d_pct": 4.74,
+        "tvl_change_30d_pct": 9.43,
+        "tvl_change_7d_pct": 13.16,
+        "tvl_usd": 5473838329.0
+      },
+      "elapsed_ms": 42.1,
+      "status": "ok"
+    },
+    "validators": {
+      "data": {
+        "active_count": 684,
+        "delinquent_count": 10,
+        "delinquent_pct": 1.44,
+        "delinquent_stake_pct": 0.07,
+        "delinquent_stake_sol": 304579.893,
+        "median_commission_pct": 5,
+        "superminority_count": 18,
+        "top10_stake_share_pct": 24.34,
+        "top_validators": [
+          {
+            "commission_pct": 7,
+            "node_pubkey": "Fd7btgySsrjuo25CJCj7oE7VPMyezDhnx7pZkj2v69Nk",
+            "stake_share_pct": 3.94,
+            "stake_sol": 17066371.971,
+            "vote_pubkey": "CcaHc2L43ZWjwCHART3oZoJvHLAe9hzT2DJNUpBzoTN1"
+          },
+          {
+            "commission_pct": 0,
+            "node_pubkey": "HEL1USMZKAL2odpNBj2oCjffnFGaYwmbGmyewGv1e2TU",
+            "stake_share_pct": 3.706,
+            "stake_sol": 16054077.974,
+            "vote_pubkey": "he1iusunGwqrNtafDtLdhsUQDFvo13z9sUa36PauBtk"
+          },
+          {
+            "commission_pct": 0,
+            "node_pubkey": "DRpbCBMxVnDK7maPM5tGv6MvB3v1sRMC86PZ8okm21hy",
+            "stake_share_pct": 2.811,
+            "stake_sol": 12175412.97,
+            "vote_pubkey": "3N7s9zXMZ4QqvHQR15t5GNHyqc89KduzMP7423eWiD5g"
+          },
+          {
+            "commission_pct": 5,
+            "node_pubkey": "JUPiTERrZqgf1jUyR7dSkhMx4Kn2qJyekWsg3LT1h4b",
+            "stake_share_pct": 2.72,
+            "stake_sol": 11782031.718,
+            "vote_pubkey": "CatzoSMUkTRidT5DwBxAC2pEtnwMBTpkCepHkFgZDiqb"
+          },
+          {
+            "commission_pct": 7,
+            "node_pubkey": "C8Bey3LKVJHVqN6xPTeW8WJfUgFQAeGNBpT4Rp99JP1k",
+            "stake_share_pct": 2.119,
+            "stake_sol": 9178661.115,
+            "vote_pubkey": "26pV97Ce83ZQ6Kz9XT4td8tdoUFPTng8Fb8gPyc53dJx"
+          },
+          {
+            "commission_pct": 10,
+            "node_pubkey": "CAo1dCGYrB6NhHh5xb1cGjUiu86iyCfMTENxgHumSve4",
+            "stake_share_pct": 2.059,
+            "stake_sol": 8917576.632,
+            "vote_pubkey": "51JBzSTU5rAM8gLAVQKgp4WoZerQcSqWC7BitBzgUNAm"
+          },
+          {
+            "commission_pct": 0,
+            "node_pubkey": "E1r4Psq84tHfQ6aPTvvDka4U3u8zPVD7gEUrH25RdxHL",
+            "stake_share_pct": 1.94,
+            "stake_sol": 8402660.187,
+            "vote_pubkey": "8GbwASqdpw4dVcwbWUxbHXMrjyQx2aKkoBR5H1GJF8iD"
+          },
+          {
+            "commission_pct": 7,
+            "node_pubkey": "EvnRmnMrd69kFdbLMxWkTn1icZ7DCceRhvmb2SJXqDo4",
+            "stake_share_pct": 1.839,
+            "stake_sol": 7964352.039,
+            "vote_pubkey": "9QU2QSxhb24FUX3Tu2FpczXjpK3VYrvRudywSZaM29mF"
+          },
+          {
+            "commission_pct": 5,
+            "node_pubkey": "9eGrDohdNTAo61DRHyfMuqKWXqYnA3i254Wiszxe8FoY",
+            "stake_share_pct": 1.699,
+            "stake_sol": 7357820.584,
+            "vote_pubkey": "CvSb7wdQAFpHuSpTYTJnX5SYH4hCfQ9VuGnqrKaKwycB"
+          },
+          {
+            "commission_pct": 0,
+            "node_pubkey": "Awes4Tr6TX8JDzEhCZY2QVNimT6iD1zWHzf1vNyGvpLM",
+            "stake_share_pct": 1.511,
+            "stake_sol": 6547242.759,
+            "vote_pubkey": "DumiCKHVqoCQKD8roLApzR5Fit8qGV5fVQsJV9sTZk4a"
+          }
+        ],
+        "total_count": 694,
+        "total_stake_sol": 433180754.148,
+        "zero_commission_count": 258
+      },
+      "elapsed_ms": 962.6,
+      "status": "ok"
+    }
+  },
+  "summary": {
+    "complete": true,
+    "failed_sources": [],
+    "sources_failed": 0,
+    "sources_ok": 5,
+    "sources_total": 5
+  }
+}

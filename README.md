@@ -189,9 +189,11 @@ already use:
   --html /var/www/solpulse/index.html
 ```
 
-`collect` writes each file only after the fetch succeeds and exits non-zero on a
-degraded report, so a failed run leaves the last good dashboard in place and is
-visible to any cron mailer or monitoring wrapper.
+`collect` writes the requested output files even when the snapshot contains
+failed sources, then exits with status 1 for a degraded report. A degraded
+report can therefore replace the previous dashboard; atomic writes do not
+preserve the last good report. To retain it, a separate wrapper must write to
+staging paths and publish those files only when `collect` exits with status 0.
 
 Every output file is written **atomically** — to a temporary file in the target's
 own directory, then `os.replace`d into position. A browser reloading a hosted
